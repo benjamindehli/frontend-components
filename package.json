@@ -1,0 +1,9 @@
+{
+  "name": "frontend-components",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/benjamindehli/frontend-components.git",
+  "author": "Benjamin Dehli <superelg@gmail.com>",
+  "license": "GPL",
+  "private": false
+}
