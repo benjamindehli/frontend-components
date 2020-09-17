@@ -1,15 +1,16 @@
 const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {
   CleanWebpackPlugin
 } = require('clean-webpack-plugin');
+const DESTINATION = path.resolve( __dirname, 'dist' );
 
 module.exports = {
   mode: "production",
   entry: "./src/index.js",
   output: {
-    filename: "bundle.js",
-    publicPath: "/assets/",
+    filename: "[name].bundle.js",
+    path: DESTINATION,
+    publicPath: "/dist/",
     libraryTarget: "umd"
   },
   module: {
@@ -18,14 +19,14 @@ module.exports = {
         use: [{
           loader: 'file-loader',
           options: {
-            name: 'assets/images/[folder]/[name].[ext]',
+            name: 'assets/[folder]/[name].[ext]',
           }
         }]
       },
       {
         test: /\.js?$/,
         include: [
-          path.resolve(__dirname, "src/lib")
+          path.resolve(__dirname, "src/components")
         ],
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
@@ -35,29 +36,15 @@ module.exports = {
       },
       {
         test: /\.(sa|sc|c)ss$/,
-        use: [{
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              esModule: true
-            }
-          },
-          {
-            loader: "css-loader",
-            options: {
-              sourceMap: true,
-              esModule: true,
-              modules: {
-                mode: 'local',
-                localIdentName: '[path][name]__[local]',
-                context: path.resolve(__dirname, 'src/lib/components')
-              },
-            }
-          },
-          "postcss-loader",
+        use: [
+          "raw-loader",
           {
             loader: "sass-loader",
             options: {
-              sourceMap: true
+              sourceMap: true,
+              sassOptions:{
+               includePaths: [path.resolve(__dirname, 'node_modules')]
+             }
             }
           }
         ]
@@ -79,10 +66,11 @@ module.exports = {
     },
   },
   plugins: [
-    new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[name].[id].css'
-    })
-  ]
+    new CleanWebpackPlugin()
+  ],
+  devServer: {
+    contentBase: path.join(__dirname, ''),
+    compress: true,
+    port: 9000
+  }
 }
